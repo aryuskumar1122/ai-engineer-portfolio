@@ -457,35 +457,58 @@
         <div class="radar-wrap">${buildRadarSVG(DATA.skills)}</div>`;
     }
     function buildRadarSVG(skills){
-      const N=skills.length, size=240, center=size/2, maxR=88;
-      const angleFor = i => (-90+i*(360/N))*Math.PI/180;
-      const ptFor = (i,frac) => {
-        const a=angleFor(i);
-        return [center+maxR*frac*Math.cos(a), center+maxR*frac*Math.sin(a)];
-      };
-      let svg = `<svg viewBox="0 0 ${size} ${size}" class="radar" role="img" aria-label="Skill levels chart">`;
-      [0.25,0.5,0.75,1].forEach(f=>{
-        const pts = skills.map((_,i)=>ptFor(i,f).join(',')).join(' ');
-        svg += `<polygon points="${pts}" class="radar-ring" />`;
-      });
-      skills.forEach((_,i)=>{
-        const [x,y]=ptFor(i,1);
-        svg += `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" class="radar-axis" />`;
-      });
-      const dataPts = skills.map((s,i)=>ptFor(i,s.level/100).join(',')).join(' ');
-      svg += `<polygon points="${dataPts}" class="radar-data" />`;
-      skills.forEach((s,i)=>{
-        const [x,y]=ptFor(i,s.level/100);
-        svg += `<circle cx="${x}" cy="${y}" r="3.5" class="radar-dot" />`;
-      });
-      skills.forEach((s,i)=>{
-        const [x,y]=ptFor(i,1.22);
-        const a=angleFor(i), cosA=Math.cos(a);
-        const anchor = cosA>0.35?'start':(cosA<-0.35?'end':'middle');
-        svg += `<text x="${x}" y="${y}" text-anchor="${anchor}" class="radar-label">${escapeHtml(s.name)}</text>`;
-      });
-      svg += `</svg>`;
-      return svg;
+        // Massive 500x500 canvas with a smaller 90px radius chart to guarantee text fits
+        const size = 500;
+        const center = size / 2;
+        const maxR = 90; 
+        const N = skills.length;
+        
+        const angleFor = i => (-90+i*(360/N))*Math.PI/180;
+        const ptFor = (i,frac) => {
+          const a = angleFor(i);
+          return [center + maxR * frac * Math.cos(a), center + maxR * frac * Math.sin(a)];
+        };
+        
+        let svg = `<svg viewBox="0 0 ${size} ${size}" class="radar" role="img" aria-label="Skill levels chart" style="width:100%; height:auto;">`;
+        
+        // Draw background rings
+        [0.25, 0.5, 0.75, 1].forEach(f => {
+          const pts = skills.map((_,i) => ptFor(i,f).join(',')).join(' ');
+          svg += `<polygon points="${pts}" class="radar-ring" />`;
+        });
+        
+        // Draw axes
+        skills.forEach((_,i) => {
+          const [x,y] = ptFor(i,1);
+          svg += `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" class="radar-axis" />`;
+        });
+        
+        // Draw data polygon
+        const dataPts = skills.map((s,i) => ptFor(i, s.level/100).join(',')).join(' ');
+        svg += `<polygon points="${dataPts}" class="radar-data" />`;
+        
+        // Draw data dots
+        skills.forEach((s,i) => {
+          const [x,y] = ptFor(i, s.level/100);
+          svg += `<circle cx="${x}" cy="${y}" r="4" class="radar-dot" />`;
+        });
+        
+        // Draw text labels
+        skills.forEach((s,i) => {
+          // Push text out 30% beyond the outer ring
+          const [x,y] = ptFor(i, 1.3); 
+          const a = angleFor(i);
+          const cosA = Math.cos(a);
+          
+          const anchor = cosA > 0.35 ? 'start' : (cosA < -0.35 ? 'end' : 'middle');
+          const dy = Math.sin(a) > 0.5 ? 12 : (Math.sin(a) < -0.5 ? -4 : 4);
+          
+          // Bumped font size slightly for readability since the viewbox is larger
+          svg += `<text x="${x}" y="${y + dy}" text-anchor="${anchor}" class="radar-label" style="font-size: 13px; fill: var(--white);">${escapeHtml(s.name)}</text>`;
+        });
+        
+        svg += `</svg>`;
+        return svg;
     }
     function renderContactHTML(){
       return `
