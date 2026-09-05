@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#050608">
+<title>Aryus Kumar Samal — AI Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Link to your external stylesheet -->
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<noscript><div class="noscript-msg">This portfolio is a fully interactive 3D experience and needs JavaScript enabled to run.</div></noscript>
+
+<canvas id="scene-canvas"></canvas>
+
+<div id="boot"><div id="boot-log"></div></div>
+
+<div id="identity" class="hud-corner">
+  <div class="name">ARYUS KUMAR SAMAL</div>
+  <div class="role">AI Engineer / ML Systems</div>
+</div>
+
+<div id="status" class="hud-corner">
+  <span class="dot"></span><span class="status-text">Available for new projects</span>
+</div>
+
+<div id="hint" class="hud-corner">Drag to look around. Click a node to open it.</div>
+
+<button id="back-btn">back to overview</button>
+
+<nav class="sr-nav" aria-label="Portfolio sections">
+  <button data-target="about">About</button>
+  <button data-target="projects">Projects</button>
+  <button data-target="skills">Skills</button>
+  <button data-target="contact">Contact</button>
+</nav>
+
+<div id="panel" tabindex="-1" aria-live="polite">
+  <button id="panel-close" aria-label="Close panel">&times;</button>
+  <div id="panel-body"></div>
+</div>
+
+<!-- Load Three.js Engine first -->
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<!-- Load your Data -->
+<script src="data.js"></script>
+<!-- Load your Application Logic -->
+<script src="app.js"></script>
+
+</body>
+</html>
