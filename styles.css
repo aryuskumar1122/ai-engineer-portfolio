@@ -149,17 +149,44 @@
   
   @media (max-width: 720px) {
     #panel {
-      top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: min(72vh, 620px);
+      top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 75vh;
       border-left: none; border-top: 1px solid var(--line);
       clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%, 0 16px);
       transform: translateY(110%);
+      padding: 24px 20px;
+      z-index: 1000;
     }
     #panel.open { transform: translateY(0); }
+    
+    /* Move back button to top-left so the panel doesn't cover it */
+    #back-btn {
+      top: 75px; left: 16px; bottom: auto;
+      background: rgba(11, 15, 26, 0.9);
+    }
+    
+    /* Move hint text higher up to clear the user's thumb */
+    #hint { bottom: 25vh; }
   }
   @media (max-width: 480px) {
+    #identity { top: 16px; left: 16px; }
     #identity .name { font-size: 16px; }
+    
+    #status { top: 16px; right: 16px; }
     #status .status-text { display: none; }
-    #hint { font-size: 11px; padding: 0 16px; }
+    
+    #hint { font-size: 11px; padding: 0 16px; width: 100%; }
+    
+    .panel-title { font-size: 22px; padding-right: 32px; }
+    .panel-lead { font-size: 13px; }
+    
+    /* Stack grid items to prevent text squishing */
+    .stat-grid { grid-template-columns: 1fr; gap: 12px; }
+    
+    /* Force the SVG radar chart to scale down */
+    /*.radar-wrap svg { width: 100%; max-width: 260px; height: auto; display: block; margin: 0 auto; }*/
+    
+    .term-log { height: 120px; }
+    #panel-close { top: 16px; right: 16px; width: 28px; height: 28px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .15s !important; }
