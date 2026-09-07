@@ -175,7 +175,7 @@
     scene.add(label);
   
     const hit = new THREE.Mesh(
-      new THREE.SphereGeometry(opts.size+0.9, 10, 10),
+      new THREE.SphereGeometry(opts.size+1.5, 10, 10),
       new THREE.MeshBasicMaterial({transparent:true, opacity:0, depthWrite:false})
     );
     hit.position.copy(opts.position);
@@ -330,6 +330,11 @@
   function onPointerDown(e){
     canvas.setPointerCapture(e.pointerId);
     activePointers.set(e.pointerId, {x:e.clientX,y:e.clientY});
+    
+    const rect = canvas.getBoundingClientRect();
+    pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  
     isDragging=true; dragMoved=0; canvas.classList.add('dragging');
     lastInteraction = performance.now();
   }
@@ -365,7 +370,6 @@
     if(activePointers.size===0){
       isDragging=false; canvas.classList.remove('dragging');
       
-      // Feature Added: Only trigger node selection or background reset if the click actually hit the canvas
       if(dragMoved<6 && e.target === canvas){
         raycaster.setFromCamera(pointerNDC, camera);
         const hits = raycaster.intersectObjects(clickableMeshes);
@@ -439,17 +443,19 @@
   
     if(id==='core'){ resetView(); return; }
   
+    // FIX: If clicking the node we are already looking at, reset to center
+    if(currentFocusId === id) {
+      resetView();
+      return;
+    }
+  
     if(node.type==='hub'){
       currentFocusId = id;
       flyTo(node.position, node.focusRadius);
       backBtn.classList.add('visible');
       
       if(id==='projects'){ 
-        if (!projectsExpanded) {
-          toggleProjects(true);
-        } else {
-          toggleProjects(false);
-        }
+        if (!projectsExpanded) toggleProjects(true);
         closePanel(); 
         return; 
       }
